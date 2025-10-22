@@ -106,10 +106,10 @@ export const RadarChart = () => {
     return positions[index];
   };
 
-  // Calculate if a ring should be filled based on percentage
+  // Calculate if a ring should be filled based on percentage (round up)
   const shouldFillRing = (value: number, ringIndex: number): boolean => {
-    const ringPercentage = ((ringIndex + 1) * 100) / rings;
-    return value >= ringPercentage;
+    const ringStartPercentage = (ringIndex * 100) / rings;
+    return value > ringStartPercentage;
   };
 
   // Calculate indicator position based on percentage
