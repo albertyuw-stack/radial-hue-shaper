@@ -1,4 +1,10 @@
 import { Card } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Segment {
   label: string;
@@ -7,14 +13,11 @@ interface Segment {
   icon: string;
 }
 
-const segments: Segment[] = [
-  { label: "Goal Attainment", value: 74.2, color: "purple", icon: "🎯" },
-  { label: "Conversation Experience", value: 45.0, color: "orange", icon: "💬" },
-  { label: "Integrity", value: 89.3, color: "blue", icon: "🔄" },
-  { label: "Operational Reliability", value: 25.8, color: "cyan", icon: "⚙️" },
-];
+interface RadarChartProps {
+  segments: Segment[];
+}
 
-export const RadarChart = () => {
+export const RadarChart = ({ segments }: RadarChartProps) => {
   const size = 400;
   const center = size / 2;
   const maxRadius = 160;
@@ -121,6 +124,11 @@ export const RadarChart = () => {
     return { x, y };
   };
 
+  // Get all indicator positions for connecting lines
+  const indicatorPositions = segments.map((segment, index) =>
+    getIndicatorPosition(index, segment.value)
+  );
+
   return (
     <div className="w-full max-w-4xl mx-auto p-8">
       <div className="relative">
@@ -166,26 +174,25 @@ export const RadarChart = () => {
                     />
                   );
                 })}
-
-                {/* Value indicator dot */}
-                {(() => {
-                  const { x, y } = getIndicatorPosition(segmentIndex, segment.value);
-                  return (
-                    <>
-                      <circle
-                        cx={x}
-                        cy={y}
-                        r="6"
-                        fill="white"
-                        stroke={getColorClass(segment.color, 2)}
-                        strokeWidth="3"
-                        className="drop-shadow-md"
-                      />
-                      <circle cx={x} cy={y} r="3" fill={getColorClass(segment.color, 1)} />
-                    </>
-                  );
-                })()}
               </g>
+            );
+          })}
+
+          {/* Connecting lines between indicators */}
+          {indicatorPositions.map((pos, index) => {
+            const nextPos = indicatorPositions[(index + 1) % indicatorPositions.length];
+            return (
+              <line
+                key={`line-${index}`}
+                x1={pos.x}
+                y1={pos.y}
+                x2={nextPos.x}
+                y2={nextPos.y}
+                stroke="hsl(var(--foreground))"
+                strokeWidth="2"
+                strokeDasharray="4,4"
+                opacity="0.5"
+              />
             );
           })}
 
@@ -227,6 +234,41 @@ export const RadarChart = () => {
               />
             );
           })}
+
+          {/* Value indicator dots with tooltips */}
+          <TooltipProvider>
+            {segments.map((segment, segmentIndex) => {
+              const { x, y } = getIndicatorPosition(segmentIndex, segment.value);
+              const tooltipId = `tooltip-${segmentIndex}`;
+              
+              return (
+                <g key={segmentIndex}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <g className="cursor-pointer">
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="8"
+                          fill="white"
+                          stroke={getColorClass(segment.color, 2)}
+                          strokeWidth="3"
+                          className="drop-shadow-md transition-all hover:r-10"
+                        />
+                        <circle cx={x} cy={y} r="3" fill={getColorClass(segment.color, 1)} />
+                      </g>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div className="text-sm font-medium">
+                        {segment.icon} {segment.label}
+                      </div>
+                      <div className="text-lg font-bold">{segment.value}%</div>
+                    </TooltipContent>
+                  </Tooltip>
+                </g>
+              );
+            })}
+          </TooltipProvider>
         </svg>
 
         {/* Labels */}
