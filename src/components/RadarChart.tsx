@@ -106,6 +106,21 @@ export const RadarChart = () => {
     return positions[index];
   };
 
+  // Calculate if a ring should be filled based on percentage
+  const shouldFillRing = (value: number, ringIndex: number): boolean => {
+    const ringPercentage = ((ringIndex + 1) * 100) / rings;
+    return value >= ringPercentage;
+  };
+
+  // Calculate indicator position based on percentage
+  const getIndicatorPosition = (segmentIndex: number, value: number) => {
+    const angle = (segmentIndex * 90 - 90 + 45) * (Math.PI / 180); // Middle of segment
+    const radius = innerRadius + (value / 100) * (maxRadius - innerRadius);
+    const x = center + radius * Math.cos(angle);
+    const y = center + radius * Math.sin(angle);
+    return { x, y };
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-8">
       <div className="relative">
@@ -133,11 +148,17 @@ export const RadarChart = () => {
                   const ringOuterRadius =
                     innerRadius + ((ringIndex + 1) * (maxRadius - innerRadius)) / rings;
 
+                  const isFilled = shouldFillRing(segment.value, ringIndex);
+
                   return (
                     <path
                       key={ringIndex}
                       d={createArcPath(startAngle, endAngle, ringInnerRadius, ringOuterRadius)}
-                      fill={getColorClass(segment.color, ringIndex)}
+                      fill={
+                        isFilled
+                          ? getColorClass(segment.color, ringIndex)
+                          : "hsl(var(--radar-grey))"
+                      }
                       stroke="white"
                       strokeWidth="1"
                       opacity="0.9"
@@ -145,6 +166,25 @@ export const RadarChart = () => {
                     />
                   );
                 })}
+
+                {/* Value indicator dot */}
+                {(() => {
+                  const { x, y } = getIndicatorPosition(segmentIndex, segment.value);
+                  return (
+                    <>
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r="6"
+                        fill="white"
+                        stroke={getColorClass(segment.color, 2)}
+                        strokeWidth="3"
+                        className="drop-shadow-md"
+                      />
+                      <circle cx={x} cy={y} r="3" fill={getColorClass(segment.color, 1)} />
+                    </>
+                  );
+                })()}
               </g>
             );
           })}
