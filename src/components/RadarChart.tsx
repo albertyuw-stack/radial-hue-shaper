@@ -101,10 +101,10 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
 
   const getLabelPosition = (index: number) => {
     const positions = [
-      { top: "10%", right: "5%", items: "end" },
-      { bottom: "35%", right: "5%", items: "end" },
-      { bottom: "10%", left: "5%", items: "start" },
-      { top: "35%", left: "5%", items: "start" },
+      { top: "0%", right: "0%", items: "end" },
+      { bottom: "0%", right: "0%", items: "end" },
+      { bottom: "0%", left: "0%", items: "start" },
+      { top: "0%", left: "0%", items: "start" },
     ];
     return positions[index];
   };
@@ -189,7 +189,7 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
                 x2={nextPos.x}
                 y2={nextPos.y}
                 stroke="hsl(var(--foreground))"
-                strokeWidth="2"
+                strokeWidth="1"
                 strokeDasharray="4,4"
                 opacity="0.5"
               />
