@@ -277,12 +277,12 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
           return (
             <Card
               key={index}
-              className={`absolute ${getLabelColor(segment.color)} border p-4 rounded-xl shadow-md min-w-[180px]`}
+              className={`absolute ${getLabelColor(segment.color)} border p-4 rounded-xl shadow-md min-w-[180px] font-inter`}
               style={position}
             >
-              <div className={`flex ${position.items === "end" ? "flex-row-reverse" : "flex-row"} items-center gap-3`}>
+              <div className="flex items-center gap-3">
                 <span className="text-2xl">{segment.icon}</span>
-                <div className={position.items === "end" ? "text-right" : "text-left"}>
+                <div className="text-left">
                   <div className="font-semibold text-sm leading-tight">{segment.label}</div>
                   <div className="text-2xl font-bold mt-1">{segment.value}%</div>
                 </div>
