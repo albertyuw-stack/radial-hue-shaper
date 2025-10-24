@@ -132,7 +132,7 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
   return (
     <div className="w-full max-w-4xl mx-auto p-8">
       <div className="relative">
-        <svg width={size} height={size} className="mx-auto drop-shadow-lg">
+        <svg width={size} height={size} className="mx-auto">
           {/* Background circle */}
           <circle
             cx={center}
@@ -165,7 +165,7 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
                       fill={
                         isFilled
                           ? getColorClass(segment.color, ringIndex)
-                          : "hsl(var(--radar-grey))"
+                          : "#F1F1F2"
                       }
                       stroke="white"
                       strokeWidth="1"
@@ -210,7 +210,7 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
                 r={r}
                 fill="none"
                 stroke="white"
-                strokeWidth="1.5"
+                strokeWidth="1"
                 opacity="0.5"
               />
             );
@@ -229,7 +229,7 @@ export const RadarChart = ({ segments }: RadarChartProps) => {
                 x2={x}
                 y2={y}
                 stroke="white"
-                strokeWidth="1.5"
+                strokeWidth="1"
                 opacity="0.5"
               />
             );
